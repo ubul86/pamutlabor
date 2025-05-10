@@ -74,9 +74,14 @@ Copy the .env.testing.example file to .env.testing
 cp .env.testing.example .env.testing
 ```
 
-### 3. Set Environment Variables
-In the .env file, you need to set the DB connections and some Host.
-Here is an example configuration:
+### 3. Set Environment Variables And Database Connection
+
+In the `.env` file, you need to set the DB connection and some host-related values.  
+Choose your database driver and follow the corresponding configuration.
+
+#### Option A: MySQL (default)
+
+Here is an example configuration using MySQL:
 
 ```env
 DB_CONNECTION=mysql
@@ -90,10 +95,28 @@ DB_ROOT_PASSWORD=your_database_root_password
 NGINX_PORT=8080
 PHPMYADMIN_PORT=45678
 VITE_API_URL=/api/
-
 ```
 
-The DB_HOST needs to be mysql82 service name.
+Note: The DB_HOST must match the service name used in your Docker setup (e.g., mysql82).
+
+#### Option B: SQLite (alternative, simpler local setup)
+
+If you prefer to use SQLite instead of MySQL, use the following minimal configuration:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+In this case, delete or comment out any other database-related .env keys (such as DB_HOST, DB_PORT, etc.).
+
+Then, create the SQLite file if it doesn't exist yet:
+
+```bash
+touch database/database.sqlite
+```
+
+Make sure the database/ directory is writable and that the Laravel app has access to database/database.sqlite.
+
 
 ### 4. Build The Containers
 
@@ -213,7 +236,12 @@ cp .env.testing.example .env.testing
 
 ### 5. Configure the Database
 
-Create a new database for the project and set the database connection in the .env file. Update the following lines in your .env file. There is an example setting:
+In the `.env` file, you need to set the DB connection and some host-related values.  
+Choose your database driver and follow the corresponding configuration.
+
+#### Option A: MySQL (default)
+
+Here is an example configuration using MySQL:
 
 ```env
 DB_CONNECTION=mysql
@@ -223,6 +251,24 @@ DB_DATABASE=your_database_name
 DB_USERNAME=your_database_username
 DB_PASSWORD=your_database_password
 ```
+
+#### Option B: SQLite (alternative, simpler local setup)
+
+If you prefer to use SQLite instead of MySQL, use the following minimal configuration:
+
+```env
+DB_CONNECTION=sqlite
+```
+
+In this case, delete or comment out any other database-related .env keys (such as DB_HOST, DB_PORT, etc.).
+
+Then, create the SQLite file if it doesn't exist yet:
+
+```bash
+touch database/database.sqlite
+```
+
+Make sure the database/ directory is writable and that the Laravel app has access to database/database.sqlite.
 
 ### 6. Run Migrations
 

@@ -43,7 +43,7 @@
         </template>
         <template v-slot:[`item.actions`]="{ item }">
             <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil</v-icon>
-            <v-icon size="small" @click="openTagDialog(item)">mdi-image</v-icon>
+            <v-icon size="small" @click="openTagDialog(item)">mdi-tag-multiple</v-icon>
             <v-icon size="small" @click="dialogDelete(item)">mdi-delete</v-icon>
         </template>
         <template v-slot:no-data>

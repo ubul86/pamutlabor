@@ -9,7 +9,6 @@
     <v-data-table-server
         v-model="selected"
         :headers="computedHeaders"
-        show-select
         :items="productStore.products"
         v-model:search="search"
         :filter-keys="['name']"
@@ -50,12 +49,6 @@
             <v-btn color="primary" @click="initialize">Reset</v-btn>
         </template>
     </v-data-table-server>
-
-    <v-row v-if="selected.length">
-        <v-col>
-            <v-btn @click="bulkDelete">Bulk delete</v-btn>
-        </v-col>
-    </v-row>
 
     <ProductDialogDeleteComponent
         :is-dialog-delete-open="isDialogDeleteOpen"

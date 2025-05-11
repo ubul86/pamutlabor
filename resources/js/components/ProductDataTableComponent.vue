@@ -40,6 +40,17 @@
 
             </v-toolbar>
         </template>
+        <template v-slot:[`item.tags`]="{ item }">
+            <div class="used-time-container d-flex flex-row mt-2 mb-2">
+                <v-chip
+                    v-for="(tagItem, index) in item.tags"
+                    :key="index"
+                    class="ma-1"
+                >
+                    {{ tagItem.name }}
+                </v-chip>
+            </div>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
             <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil</v-icon>
             <v-icon size="small" @click="openTagDialog(item)">mdi-tag-multiple</v-icon>
@@ -122,6 +133,7 @@ const headers = [
     { title: 'Name', key: 'name', sortable: false },
     { title: 'Description', key: 'description', sortable: false },
     { title: 'Price', key: 'price' },
+    { title: 'Tags', key: 'tags' },
     { title: 'Created At', key: 'created_at' },
     { title: 'Updated At', key: 'updated_at' },
     { title: 'Actions', key: 'actions', sortable: false },
@@ -144,7 +156,7 @@ const defaultItem = {
 
 const search = ref('');
 
-const toggleHeaders = ref(['id','name', 'price', 'description', 'created_at', 'updated_at', 'actions']);
+const toggleHeaders = ref(['id','name', 'price', 'description', 'tags', 'created_at', 'updated_at', 'actions']);
 
 const computedHeaders = computed(() => {
     return headers.filter(header => toggleHeaders.value.includes(header.key));

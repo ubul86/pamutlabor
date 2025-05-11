@@ -42,7 +42,7 @@ class ProductService
         return $this->productRepo->delete($id);
     }
 
-    public function syncTags(Product $product, array $tagIds = []): Product
+    public function syncTags(Product $product, array $tagIds): Product
     {
         return $this->productRepo->syncTags($product, $tagIds);
     }

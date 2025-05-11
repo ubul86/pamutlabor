@@ -44,7 +44,9 @@ class ProductRepository implements ProductInterface
         try {
             $tags = $this->extractTags($data);
             $product = Product::create($data);
-            $product->tags()->sync($tags);
+            if ($tags) {
+                $product->tags()->sync($tags);
+            }
             return $product->load('tags');
         } catch (Exception $e) {
             throw new Exception('Failed to create: ' . $e->getMessage());
@@ -57,8 +59,9 @@ class ProductRepository implements ProductInterface
             $product = Product::findOrFail($id);
             $tags = $this->extractTags($data);
             $product->update($data);
-            $product->tags()->sync($tags);
-
+            if ($tags !== null) {
+                $product->tags()->sync($tags);
+            }
             return $product->load('tags');
         } catch (ModelNotFoundException $e) {
             throw new Exception('Product not found: ' . $e->getMessage());
@@ -82,12 +85,10 @@ class ProductRepository implements ProductInterface
 
     public function syncTags(Product $product, ?array $tagIds): Product
     {
-        if (!$tagIds) {
-            $tagIds = [];
-        }
-
         try {
-            $product->tags()->sync($tagIds);
+            if ($tagIds) {
+                $product->tags()->sync($tagIds);
+            }
             return $product->load('tags');
         } catch (\Exception $e) {
             throw new Exception('Failed to delete: ' . $e->getMessage());
@@ -96,10 +97,14 @@ class ProductRepository implements ProductInterface
 
     /**
      * @param array $data
-     * @return Collection<int, int>
+     * @return Collection<int, int>|null
      */
-    private function extractTags(array &$data): Collection
+    private function extractTags(array &$data): Collection|null
     {
+        if (!isset($data['tags'])) {
+            return null;
+        }
+
         $tagIds = (new Collection($data['tags']))->map(function ($tagName) {
             return Tag::firstOrCreate(['name' => $tagName])->id;
         });

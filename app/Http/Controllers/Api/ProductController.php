@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\SyncProductTagsRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
 use App\Traits\FormatsMeta;
@@ -32,7 +33,7 @@ class ProductController extends Controller
             $models = $this->service->all($request->all());
 
             return $this->successResponse([
-                'items' => $models->items(),
+                'items' => ProductResource::collection($models->items()),
                 'meta' => $this->formatMeta($models),
             ]);
         } catch (Exception $e) {
@@ -44,7 +45,7 @@ class ProductController extends Controller
     {
         try {
             $model = $this->service->create($request->validated());
-            return $this->successResponse($model, 201);
+            return $this->successResponse(new ProductResource($model), 201);
         } catch (Exception $e) {
             return $this->errorResponse($e);
         }
@@ -54,7 +55,7 @@ class ProductController extends Controller
     {
         try {
             $model = $this->service->find($id);
-            return $this->successResponse($model);
+            return $this->successResponse(new ProductResource($model));
         } catch (Exception $e) {
             return $this->errorResponse($e);
         }
@@ -64,7 +65,7 @@ class ProductController extends Controller
     {
         try {
             $model = $this->service->update($id, $request->validated());
-            return $this->successResponse($model);
+            return $this->successResponse(new ProductResource($model));
         } catch (Exception $e) {
             return $this->errorResponse($e);
         }
@@ -84,7 +85,7 @@ class ProductController extends Controller
     {
         try {
             $model = $this->service->syncTags($product, $request->tag_ids);
-            return $this->successResponse($model, 201);
+            return $this->successResponse(new ProductResource($model), 201);
         } catch (Exception $e) {
             return $this->errorResponse($e);
         }

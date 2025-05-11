@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTagRequest;
+use App\Http\Resources\TagResource;
 use App\Models\Tag;
 use App\Services\TagService;
 use App\Traits\FormatsMeta;
@@ -29,7 +30,7 @@ class TagController extends Controller
             $models = $this->service->all();
 
             return $this->successResponse([
-                'items' => $models,
+                'items' => TagResource::collection($models),
             ]);
         } catch (Exception $e) {
             return $this->errorResponse($e);
@@ -40,7 +41,7 @@ class TagController extends Controller
     {
         try {
             $model = $this->service->create($request->validated());
-            return $this->successResponse($model, 201);
+            return $this->successResponse(new TagResource($model), 201);
         } catch (Exception $e) {
             return $this->errorResponse($e);
         }

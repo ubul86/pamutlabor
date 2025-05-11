@@ -57,9 +57,8 @@ class ProductRepository implements ProductInterface
             $product = Product::findOrFail($id);
             $tags = $this->extractTags($data);
             $product->update($data);
-            if ($tags !== null) {
-                $product->tags()->sync($tags);
-            }
+            $product->tags()->sync($tags);
+
             return $product->load('tags');
         } catch (ModelNotFoundException $e) {
             throw new Exception('Product not found: ' . $e->getMessage());
@@ -83,6 +82,10 @@ class ProductRepository implements ProductInterface
 
     public function syncTags(Product $product, ?array $tagIds): Product
     {
+        if (!$tagIds) {
+            $tagIds = [];
+        }
+
         try {
             $product->tags()->sync($tagIds);
             return $product->load('tags');
@@ -93,14 +96,10 @@ class ProductRepository implements ProductInterface
 
     /**
      * @param array $data
-     * @return Collection<int, int>|null
+     * @return Collection<int, int>
      */
-    private function extractTags(array &$data): Collection|null
+    private function extractTags(array &$data): Collection
     {
-        if (!isset($data['tags'])) {
-            return null;
-        }
-
         $tagIds = (new Collection($data['tags']))->map(function ($tagName) {
             return Tag::firstOrCreate(['name' => $tagName])->id;
         });

@@ -4,13 +4,18 @@ import productService from '@/services/product.service.js'
 export const useProductStore = defineStore('product', {
     state: () => ({
         products: [],
-        meta: [],
+        meta: {
+            'items_per_page' : 10,
+            'total_items': 0,
+            'total_pages': 0,
+            'current_page': 1
+        }
     }),
     actions: {
         async fetchProducts(params) {
             try {
                 const result = await productService.getProducts(params);
-                this.products = [...result.items];
+                this.products = result.items;
                 this.meta = result.meta;
             }
             catch(error) {
@@ -23,8 +28,11 @@ export const useProductStore = defineStore('product', {
         },
 
         async store(item) {
-            const storedItem = await productService.store(item);
-            this.products.push(storedItem);
+            await productService.store(item);
+            await this.fetchProducts({
+                page: this.meta.current_page,
+                itemsPerPage: this.meta.items_per_page,
+            });
         },
 
         async update(index, item) {
